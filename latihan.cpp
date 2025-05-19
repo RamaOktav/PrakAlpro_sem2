@@ -1,0 +1,769 @@
+#include <iostream>
+#include <string>
+#include <cctype>
+#include <algorithm>
+#include <string.h>
+#include <iomanip>
+#include <cstdio>
+
+using namespace std;
+  
+struct Book {
+    int bookId;
+    string title;
+    string author;
+    string type;
+    int stock;
+    int publishedYear;
+};
+struct Member {
+    int memberId;
+    string name;
+    string dateOfBirth;
+    string address;
+    string email;
+    long long int phone;
+};
+struct Staff {
+    int staffId;
+    string name;
+    string role;
+    string email;
+};
+struct Loan {
+    int id;
+    int memberId;
+    int staffId;
+    int bookId;
+    string loanDate;
+    string returnDate;
+    string status;
+};
+struct GlobalSize {
+    static constexpr int book = 30;
+    static constexpr int member = 50;
+    static constexpr int staff = 10;
+    static constexpr int loan = 100;
+};
+
+Book books[GlobalSize::book];
+Member members[GlobalSize::member] = {
+    {1, "John Doe", "1990-04-25", "1234 Elm Street, Springfield, IL", "john.doe@email.com", 5551234567},
+    {2, "Jane Smith", "1985-08-12", "5678 Oak Avenue, Los Angeles, CA", "jane.smith@email.com", 5559876543},
+    {3, "Albert Einstein", "1879-03-14", "Princeton, New Jersey, USA", "albert.einstein@email.com", 5555555555},
+    {4, "Marie Curie", "1867-11-07", "Paris, France", "marie.curie@email.com", 5551239876},
+    {5, "Mahatma Gandhi", "1869-10-02", "Porbandar, Gujarat, India", "mahatma.gandhi@email.com", 5557418520},
+    {-1, "Sentinel Value", "", "", "", 0 }
+};
+Staff staff[GlobalSize::staff] = {
+    {1, "Alice Johnson", "Librarian", "alice.johnson@email.com"},
+    {2, "Bob Smith", "Library Manager", "bob.smith@email.com"},
+    {3, "Charlie Brown", "Library Assistant", "charlie.brown@email.com"},
+    {4, "Diana White", "Head Librarian", "diana.white@email.com"},
+    {5, "Eve Green", "Technician", "eve.green@email.com"},
+    {-1, "Sentinel Value", "", ""}
+};
+Loan loans[GlobalSize::loan] = {
+    {1, 1, 3, 1, "2025-02-01", "2025-02-15", "Returned"},
+    {2, 2, 3, 2, "2025-02-05", "2025-02-20", "Returned"},
+    {3, 3, 3, 3, "2025-02-10", "2025-02-25", "Loaned"},
+    {4, 4, 3, 4, "2025-02-12", "2025-02-26", "Loaned"},
+    {5, 5, 3, 5, "2025-02-14", "2025-02-28", "Returned"},
+    {-1, -1, -1, -1, "Sentinel Value", "Sentinel Value", "Sentinel Value"}
+};
+
+void enterToContinue() {
+    cout << "\nPress 'Enter' to continue...";
+    cin.ignore();
+}
+void invalidChoice() {
+    cout << "Invalid choice. Please try again.\n";
+    enterToContinue();
+}
+void clearScreen() {
+#ifdef _WIN32 // for Windows
+    system("cls");
+#elif defined(_linux_) // for Linux
+    cout << "\n";
+    system("clear");
+#endif
+}
+int validateIntInput(string input) {
+    for (int i=0;i<input.length();i++) {
+        if (!isdigit(input[i])) return -1;
+    }
+
+    try {
+        int number = std::stoi(input);
+        return number;
+    } catch (std::out_of_range&) {
+        return -1;
+    }
+
+    return -1;
+}
+string toLowerCase(const string &str) {
+    string lowerStr = str;
+    transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+    return lowerStr;
+}
+int getBooksLen() {
+    int count = 0;
+    while (books[count].bookId != -1) count++;
+    return count;
+}
+int getMembersLen() {
+    int count = 0;
+    while (members[count].memberId != -1) count++;
+    return count;
+}
+int getStaffLen() {
+    int count = 0;
+    while (staff[count].staffId != -1) count++;
+    return count;
+}
+int getLoansLen() {
+    int count = 0;
+    while (loans[count].memberId != -1) count++;
+    return count;
+}
+void setSentinelBook(int lastIndex) {
+    books[lastIndex] = {-1, "Sentinel Value", "", "", 0, 0};
+}
+void setSentinelMember(int lastIndex) {
+    members[lastIndex] = {-1, "Sentinel Value", "", "", "", 0 };
+}
+void setSentinelStaff(int lastIndex) {
+    staff[lastIndex] = {-1, "Sentinel Value", "", ""};
+}
+void setSentinelLoan(int lastIndex) {
+    loans[lastIndex] =  {-1, -1, -1, -1, "Sentinel Value", "Sentinel Value", "Sentinel Value"};
+}
+int findBookIndexById(int targetId) {
+    int i = 0;
+    while (books[i].bookId != -1) {
+        if (books[i].bookId == targetId) return i;
+        i++;
+    }
+    return -1;
+}
+
+
+int getMainChoice() {
+    string input;
+    clearScreen();
+    cout << "Welcome\n";
+    cout << "1. Book\n";
+    cout << "2. Member\n";
+    cout << "3. Staff\n";
+    cout << "4. Loans\n";
+    cout << "0. Exit\n";
+    cout << "Select menu : ";
+    cin >> input;
+    cin.ignore();
+    return validateIntInput(input);
+}
+
+int getBookChoice() {
+    string input;
+    clearScreen();
+    cout << "Books Menu\n";
+    cout << "1. Search Books\n";
+    cout << "2. Show Books\n";
+    cout << "3. Add Books\n";
+    cout << "4. Update Books\n";
+    cout << "5. Delete Books\n";
+    cout << "0. Back to main menu\n";
+    cout << "Select menu : ";
+    cin >> input;
+    cin.ignore();
+    return validateIntInput(input);
+}
+
+int getSearchBookChoice() {
+    string input;
+    clearScreen();
+    cout << "Search Book Menu\n";
+    cout << "1. Search by ID\n";
+    cout << "2. Search by Title\n";
+    cout << "0. Back to book menu\n";
+    cout << "Select menu : ";
+    cin >> input;
+    cin.ignore();
+    return validateIntInput(input);
+}
+
+int getMemberChoice() {
+    string input;
+    clearScreen();
+    cout << "Member Menu\n";
+    cout << "1. Search Member\n";
+    cout << "2. Show All Member\n";
+    cout << "3. Add Member\n";
+    cout << "4. Update Member\n";
+    cout << "5. Delete Member\n";
+    cout << "0. Back to main menu\n";
+    cout << "Select menu : ";
+    cin >> input;
+    cin.ignore();
+    return validateIntInput(input);
+}
+
+int getStaffChoice() {
+    string input;
+    clearScreen();
+    cout << "Staff Menu\n";
+    cout << "1. Show All Staff\n";
+    cout << "2. Add Staff\n";
+    cout << "3. Update Staff\n";
+    cout << "4. Delete Staff\n";
+    cout << "0. Back to main menu\n";
+    cout << "Select menu : ";
+    cin >> input;
+    cin.ignore();
+    return validateIntInput(input);
+}
+
+/**
+ * Recursive implementation
+ * Search Book by ID
+ * @param index is a starting index
+ * @param key is a search target
+ */
+string searchBookById(int index, int key){
+    if (books[index].bookId == -1)
+        return "Book not found";
+    else if(books[index].bookId == key) 
+        return books[index].title;
+    else 
+        return searchBookById(index + 1,key);
+}
+
+void searchBookByTitle() {
+    string key;
+   
+    char repeat;
+    do{ 
+        int resultCount = 0;
+        cout << "Enter book name : ";
+        getline(cin, key); 
+        if (key == "0") break;
+
+        key = toLowerCase(key);
+        cout << "Result :\n";
+        for (int i=0; books[i].bookId != -1; i++) {
+            if (toLowerCase(books[i].title).find(key) != string::npos) {
+                resultCount++;
+                cout << resultCount << ") "
+                    << books[i].title
+                    << ", by " << books[i].author
+                    << " (" << books[i].publishedYear << ")\n";
+            }
+        }
+        
+        if (resultCount == 0) {
+            cout << "No book found\n";
+        } 
+        cout << "\nSearch again? (y/n): ";
+        cin >> repeat;
+        cin.ignore();
+        repeat = tolower(repeat);
+    }while (repeat == 'y'|| repeat == 'Y');
+    
+}
+
+/**
+ * Show all element on books array including sentinel value
+ */
+void showBooks() {
+    int i = 0;
+    while (books[i].bookId != -1) {
+        cout << books[i].bookId << ") "
+            << books[i].title
+            << ", by " << books[i].author
+            << " (" << books[i].publishedYear << "), "
+            << "Stock " << books[i].stock << endl;
+        i++;
+    }
+    
+}
+
+void sortBooks(int criteria, int order){
+    int i=0;
+    int size = getBooksLen();
+    Book duplicate[size];
+    while (books[i].bookId != -1) {
+        duplicate[i] = books[i];
+        i++;
+    }
+    int validSize=i;
+    for (int i=1; i < validSize; i++) {
+        Book temp = duplicate[i];
+        int j = i-1;
+        while (j>=0) {
+            bool swap = false;
+            switch (criteria) {
+                case 1:
+                    if (order == 1) swap = (duplicate[j].bookId > temp.bookId);
+                    else swap = (duplicate[j].bookId < temp.bookId);
+                    break;
+                case 2:
+                    if (order == 1) swap = (duplicate[j].title > temp.title);
+                    else swap = (duplicate[j].title < temp.title);
+                    break;
+                case 3:
+                    if (order == 1) swap = (duplicate[j].author > temp.author);
+                    else swap = (duplicate[j].author < temp.author);
+                    break;
+                case 4:
+                    if (order == 1) swap = (duplicate[j].type > temp.type);
+                    else swap = (duplicate[j].type < temp.type);
+                    break;
+                case 5:
+                    if (order == 1) swap = (duplicate[j].stock > temp.stock);
+                    else swap = (duplicate[j].stock < temp.stock);
+                    break;
+                case 6:
+                    if (order == 1) swap = (duplicate[j].publishedYear > temp.publishedYear);
+                    else swap = (duplicate[j].publishedYear < temp.publishedYear);
+                    break;
+                default:
+                    cout << "Sort valued error" << endl;
+                    getchar();
+                    return;
+            }
+
+            if(!swap) break;
+            duplicate[j+1] = duplicate[j];
+            j-=1;
+        }
+        duplicate[j+1] = temp;
+    }
+    cout << setw(4) << left << "ID" 
+            << setw(25) << left << "Title"
+            << setw(25) << left << "Author"
+            << setw(12) << left << "Type"
+            << setw(8) << left << "Year"
+            << setw(13) << left << "Stock" << endl
+            << setfill('=') << setw(85) << "" << setfill(' ') << endl;
+    for (int i=0; i<validSize; i++) {
+        cout << setw(4) << left << duplicate[i].bookId
+                << setw(25) << left << duplicate[i].title
+                << setw(25) << left << duplicate[i].author
+                << setw(12) << left << duplicate[i].type
+                << setw(8) << left << duplicate[i].publishedYear
+                << setw(5) << left << duplicate[i].stock << endl;  
+    }
+    cout  << setfill('=') << setw(85) << "" << setfill(' ') << endl;
+}
+
+void showBooksOrder() {
+    int showChoice, orderChoice;
+    clearScreen();
+    cout << "Show Books Menu\n";
+    cout << "1. Order by ID\n";
+    cout << "2. Order by title\n";
+    cout << "3. Order by author\n";
+    cout << "4. Order by type\n";
+    cout << "5. Order by stock\n";
+    cout << "6. Order by published year\n";
+    cout << "Select menu : ";
+    cin >> showChoice;
+    cin.ignore();
+    
+    cout << "Order by\n";
+    cout << "1. Ascending\n";
+    cout << "2. Descending\n";
+    cout << "Select order : ";
+    cin >> orderChoice;
+    cin.ignore();
+    
+    sortBooks(showChoice,orderChoice);
+}
+
+// load data from file to books array
+void loadBooks() {
+    FILE* file = fopen("./data/books.txt", "r");
+    if (file == nullptr) {
+        cout << "No books data available\n";
+
+    } else {
+        int count = 0;
+        char line[256];
+        char tempTitle[100], tempAuthor[100], tempType[100];
+        int tempId, tempStock, tempPublishedYear;
+        while (fgets(line, sizeof(line), file)) {
+            sscanf(line, "%d \"%[^\"]\" \"%[^\"]\" %s %d %d",
+                &tempId, tempTitle, tempAuthor, tempType, &tempStock, &tempPublishedYear
+            );
+            books[count].bookId = tempId;
+            books[count].title = tempTitle;
+            books[count].author = tempAuthor;
+            books[count].type = tempType;
+            books[count].stock = tempStock;
+            books[count].publishedYear = tempPublishedYear;
+            count++;
+        }
+        setSentinelBook(count);
+    }
+    fclose(file);
+}
+
+// store current books array to file, for change (update and delete)
+void storeBooks() {
+    FILE* file = fopen("./data/books.txt", "w");
+    if (file != nullptr) {
+        for (int i = 0; i < getBooksLen(); i++) {
+            string writeFormat = i < getBooksLen() - 1 
+                ? "%d \"%s\" \"%s\" %s %d %d\n"
+                : "%d \"%s\" \"%s\" %s %d %d";
+            fprintf(file, writeFormat.c_str(),
+                books[i].bookId,
+                books[i].title.c_str(),
+                books[i].author.c_str(),
+                books[i].type.c_str(),
+                books[i].stock,
+                books[i].publishedYear
+            );
+        }
+        fclose(file);
+    } else {
+        cout << "Failed to open file for writing.\n";
+    }
+}
+
+void addBooks() {
+    int currentCount = getBooksLen(), inputCount;
+    string inputCountStr;
+
+    clearScreen();
+    cout << "How many books to add: ";
+    cin >> inputCountStr;
+    cin.ignore();
+
+    inputCount = validateIntInput(inputCountStr);
+    if (inputCount == -1) {
+        cout << "Invalid input. Must be a number.\n";
+        return;
+    }
+
+    if (currentCount + inputCount > GlobalSize::book) {
+        cout << "Too many books. Max allowed is " << GlobalSize::book << endl;
+        inputCount = GlobalSize::book - currentCount;
+        cout << "Adding only " << inputCount << " books.\n";
+    }
+
+    for (int i = 0; i < inputCount; i++) {
+        Book b;
+        string temp;
+
+        cout << "Book #" << (currentCount + i + 1) << endl;
+
+        cout << "Book ID: ";
+        getline(cin, temp);
+        b.bookId = validateIntInput(temp);
+
+        cout << "Title: ";
+        getline(cin, b.title);
+        cout << "Author: ";
+        getline(cin, b.author);
+        cout << "Type: ";
+        getline(cin, b.type);
+
+        cout << "Stock: ";
+        getline(cin, temp);
+        b.stock = validateIntInput(temp);
+
+        cout << "Published Year: ";
+        getline(cin, temp);
+        b.publishedYear = validateIntInput(temp);
+
+        books[currentCount + i] = b;
+    }
+
+    setSentinelBook(currentCount + inputCount);
+    storeBooks();
+
+    cout << "\nBooks added successfully.\n";
+}
+
+
+void updateBook() {
+    string updateIdStr;
+    int updateId;
+    
+    clearScreen();
+    sortBooks(1, 1);
+    cout << endl;
+    cout << "Enter Book ID to be updated : ";
+    getline(cin, updateIdStr);
+
+    updateId = validateIntInput(updateIdStr);
+    if (updateId == -1) {
+        cout << "Invalid input, input must be a number." << endl;
+        return;
+    }
+
+    // convert id to index
+    updateId = findBookIndexById(updateId);
+    if (updateId == -1) {
+        cout << "Book could not be found\n";
+        return;
+    }
+
+    Book updated;
+    cout << "Enter new value, leave it blank to keep previous value\n";
+    cout << "Book Title\t: "; getline(cin, updated.title);
+    cout << "Author Name\t: "; getline(cin, updated.author);
+    cout << "Book Type\t: "; getline(cin, updated.type);
+
+    string temp;
+    cout << "Pub. Year\t: "; getline(cin, temp);
+    updated.publishedYear = temp.empty() ? books[updateId].publishedYear : stoi(temp);
+    cout << "Book Stock\t: "; getline(cin, temp);
+    updated.stock = temp.empty() ? books[updateId].stock : stoi(temp);
+
+    if (!updated.title.empty() && updated.title != books[updateId].title) books[updateId].title = updated.title;
+    if (!updated.author.empty() && updated.author != books[updateId].author) books[updateId].author = updated.author;
+    if (!updated.type.empty() && updated.type != books[updateId].type) books[updateId].type = updated.type;
+    if (updated.publishedYear != books[updateId].publishedYear) books[updateId].publishedYear = updated.publishedYear;
+    if (updated.stock != books[updateId].stock) books[updateId].stock = updated.stock;
+
+    storeBooks();
+}
+
+/**
+ * Sequential search implementation
+ * Search Member by ID
+ */
+void searchMemberById() {
+    int key;
+    cout << "Enter member ID : ";
+    cin >> key;
+    cin.ignore();
+
+    int index = -1;
+    for (int i = 0; members[i].memberId != -1; i++) {
+        if (members[i].memberId == key)
+            index = i;
+            break;
+    }
+    if (index == -1) {
+        cout << "Member not found" << endl;
+    } else {
+
+        cout << "Nama Member : " << members[index].name << endl;
+        string dob = members[index].dateOfBirth;
+        size_t pos = dob.find(',');
+        if (pos != string::npos)
+            dob = dob.substr(0, pos);
+        cout << "Tanggal dan Tempat Kelahiran : " << dob << endl;
+        cout << "Alamat : " << members[index].address << endl;
+        cout << "Email : " << members[index].email << endl;
+        cout << "Nomor Telepon : " << members[index].phone << endl;
+    }
+}
+
+/**
+ * Pointer implementation with pointer arithmetic
+ * Show members
+ * 
+ * @param mbr is a pointer to the first element of 'struct Member' array
+ */
+void showMembers(struct Member *mbr) {
+    cout
+        << setfill('=') << setw(65) << "" << setfill(' ') << endl
+        << setw(5) << left << "ID" 
+        << setw(30) << left << "Name"
+        << setw(30) << left << "Email" << endl
+        << setfill('=') << setw(65) << "" << setfill(' ') << endl;
+
+    for (int i=0; (mbr + i)->memberId != -1; i++) {
+        cout
+            << setw(5) << left << (mbr + i)->memberId
+            << setw(30) << left << (mbr + i)->name
+            << setw(30) << left << (mbr + i)->email << endl;
+    }
+
+    cout << setfill('=') << setw(65) << "" << setfill(' ') << endl;
+}
+
+void showAllStaff() {
+    cout << setfill('=') << setw(65) << "" << setfill(' ') << endl
+         << setw(5) << left << "ID"
+         << setw(30) << left << "Name"
+         << setw(25) << left << "Role" << endl
+         << setfill('=') << setw(65) << "" << setfill(' ') << endl;
+
+    for (int i = 0; staff[i].staffId != -1; i++) {
+        cout << setw(5) << left << staff[i].staffId
+             << setw(30) << left << staff[i].name
+             << setw(25) << left << staff[i].role << endl;
+    }
+    cout << setfill('=') << setw(65) << "" << setfill(' ') << endl;
+}
+
+void deleteBook() {
+    string deleteIdStr;
+    int deleteId;
+
+    clearScreen();
+    sortBooks(1, 1);
+    cout << "Enter Book ID to delete: ";
+    getline(cin, deleteIdStr);
+
+    deleteId = validateIntInput(deleteIdStr);
+    if (deleteId == -1) {
+        cout << "Invalid ID.\n";
+        return;
+    }
+
+    int index = findBookIndexById(deleteId);
+    if (index == -1) {
+        cout << "Book not found.\n";
+        return;
+    }
+
+    // Geser elemen array ke kiri
+    for (int i = index; i < getBooksLen(); i++) {
+        books[i] = books[i + 1];
+    }
+
+    setSentinelBook(getBooksLen() - 1);
+    storeBooks();
+    cout << "Book deleted.\n";
+}
+
+int main() {
+    loadBooks();
+    char repeatMainMenu;
+    int mainChoice;
+    do {
+        mainChoice = getMainChoice();
+        switch (mainChoice) {
+            case 1: { // Sub menu 'Book'
+                int bookChoice;
+                do {
+                    bookChoice = getBookChoice();
+                    switch (bookChoice) {
+                        case 1: {
+                            int searchBookChoice;
+                            do {
+                                searchBookChoice = getSearchBookChoice();
+                                switch (searchBookChoice) {
+                                    case 1: { //search book by id
+                                        int bookId;
+                                        cin.ignore();
+                                        cout << "Enter Book ID : "; cin >> bookId;
+                                        cin.ignore();
+                                        if (bookId==0) break;
+                                        cout<< "Result  :" << searchBookById(0,bookId) << endl;
+                                        enterToContinue();
+                                        break;
+                                    }
+                                    case 2://search book by title
+                                        searchBookByTitle();
+                                        enterToContinue();
+                                        break;
+                                    case 0:
+                                        cout << "Back to book menu\n";
+                                        break;
+                                    default:
+                                        invalidChoice();
+                                        break;
+                                }
+
+                            } while (searchBookChoice != 0);
+                            break;
+                        }
+                        case 2:
+                            showBooksOrder();
+                            enterToContinue();
+                            break;
+                        case 3:
+                            addBooks();
+                            enterToContinue();
+                            break;
+                        case 4:
+                            updateBook();
+                            enterToContinue();
+                            break;
+                        case 5:
+                            deleteBook;
+                            enterToContinue();
+                            break;
+                        case 0:
+                            cout << "Back to main menu\n";
+                            break;
+                        default: {
+                            invalidChoice();
+                            break;
+                        }
+                    }
+                } while(bookChoice != 0);
+                break;
+            }
+            case 2: { // Sub menu 'Member'
+                int memberChoice;
+                do {
+                    memberChoice = getMemberChoice();
+                    switch (memberChoice) {
+                        case 1:
+                            searchMemberById();
+                            enterToContinue();
+                            break;
+                        case 2:
+                            showMembers(members);
+                            enterToContinue();
+                            break;
+                        case 0:
+                            cout << "Back to main menu\n";
+                            break;
+                        default:
+                            invalidChoice();
+                            break;
+                    }
+                } while (memberChoice != 0);
+                break;
+            }
+            case 3: { // Sub menu 'Staff'
+                int staffChoice;
+                do {
+                    staffChoice = getStaffChoice();
+                    switch (staffChoice) {
+                        case 1:
+                            showAllStaff();
+                            enterToContinue();
+                            break;
+                            case 2:
+                            cout << "Add Staff (Not Implemented)\n";
+                            enterToContinue();
+                            break;
+                        case 3:
+                            cout << "Update Staff (Not Implemented)\n";
+                            enterToContinue();
+                            break;
+                        case 4:
+                            cout << "Delete Staff (Not Implemented)\n";
+                            enterToContinue();
+                            break;
+                        case 0:
+                            cout << "Back to main menu";
+                            enterToContinue();
+                            break;
+                        default:
+                            invalidChoice();
+                            break;
+                    }
+                } while (staffChoice != 0);
+            }
+            case 0:
+                cout << "Exit\n";
+                break;
+            default: {
+                invalidChoice();
+                break;
+            }
+        }
+    } while (mainChoice != 0);
+}
