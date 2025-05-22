@@ -2,3 +2,4 @@
 2 "1984" "George Orwell" Dystopian 8 1949
 3 "The Hobbit" "J.R.R. Tolkien" Fantasy 5 1937
 4 "Joko Jenggirat" "Ki Joko Pintar" horror 10 2020
+5 "Kitab Katub" "Tatang Sutarman" Kitab suci 8 789

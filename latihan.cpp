@@ -689,7 +689,7 @@ int main() {
                             enterToContinue();
                             break;
                         case 5:
-                            deleteBook;
+                            deleteBook();
                             enterToContinue();
                             break;
                         case 0:
@@ -756,7 +756,7 @@ int main() {
                             break;
                     }
                 } while (staffChoice != 0);
-            }
+            } 
             case 0:
                 cout << "Exit\n";
                 break;
