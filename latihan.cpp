@@ -230,7 +230,7 @@ int getLoansChoice(){
     cout << "Loans Menu\n";
     cout << "1. Show All Loans\n";
     cout << "2. Add Loan\n";
-    cout << "3. Update Loan\n";
+    cout << "3. Return Loan\n";
     cout << "4. Delete Loan\n";
     cout << "0. Back to main menu\n";
     cout << "Select menu : ";
@@ -933,11 +933,181 @@ void showAllLoans() {
     cout << setfill('=') << setw(80) << "" << setfill(' ') << endl;
 }
 
+void addLoan() {
+    int currentCount = getLoansLen();
+    if (currentCount >= GlobalSize::loan - 1) {
+        cout << "Loan list is full.\n";
+        return;
+    }
+
+    Loan l;
+    string temp;
+
+    cout << "Enter Loan ID: ";
+    getline(cin, temp);
+    l.id = validateIntInput(temp);
+    if (l.id == -1) {
+        cout << "Invalid ID.\n";
+        return;
+    }
+
+    // Cek duplikat ID
+    for (int i = 0; loans[i].id != -1; i++) {
+        if (loans[i].id == l.id) {
+            cout << "Loan ID already exists.\n";
+            return;
+        }
+    }
+
+    // Member ID
+    cout << "Enter Member ID: ";
+    getline(cin, temp);
+    l.memberId = validateIntInput(temp);
+    if (find_if(begin(members), end(members), [&](const Member& m){ return m.memberId == l.memberId; }) == end(members)) {
+        cout << "Member not found.\n";
+        return;
+    }
+
+    // Book ID
+    cout << "Enter Book ID: ";
+    getline(cin, temp);
+    l.bookId = validateIntInput(temp);
+    int bookIndex = findBookIndexById(l.bookId);
+    if (bookIndex == -1) {
+        cout << "Book not found.\n";
+        return;
+    }
+    if (books[bookIndex].stock <= 0) {
+        cout << "Book is out of stock.\n";
+        return;
+    }
+
+    // Staff ID
+    cout << "Enter Staff ID: ";
+    getline(cin, temp);
+    l.staffId = validateIntInput(temp);
+    if (find_if(begin(staff), end(staff), [&](const Staff& s){ return s.staffId == l.staffId; }) == end(staff)) {
+        cout << "Staff not found.\n";
+        return;
+    }
+
+    // Tanggal pinjam dan kembali
+    cout << "Enter Loan Date (YYYY-MM-DD): ";
+    getline(cin, l.loanDate);
+    cout << "Enter Expected Return Date (YYYY-MM-DD): ";
+    getline(cin, l.returnDate);
+
+    l.status = "Loaned";
+
+    // Tambahkan ke array
+    loans[currentCount] = l;
+    setSentinelLoan(currentCount + 1);
+
+    // Kurangi stok buku
+    books[bookIndex].stock--;
+
+    storeBooks();
+    storeLoans();
+    cout << "Loan successfully added.\n";
+}
+
+void returnLoan() {
+    string temp;
+    cout << "Enter Loan ID to return: ";
+    getline(cin, temp);
+    int loanId = validateIntInput(temp);
+
+    if (loanId == -1) {
+        cout << "Invalid ID.\n";
+        return;
+    }
+
+    int index = -1;
+    for (int i = 0; loans[i].id != -1; i++) {
+        if (loans[i].id == loanId) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index == -1) {
+        cout << "Loan not found.\n";
+        return;
+    }
+
+    if (toLowerCase(loans[index].status) == "returned") {
+        cout << "Book already returned.\n";
+        return;
+    }
+
+    // Cari buku dan tambahkan stok
+    int bookIndex = findBookIndexById(loans[index].bookId);
+    if (bookIndex != -1) {
+        books[bookIndex].stock++;
+    }
+
+    loans[index].status = "Returned";
+    cout << "Book returned successfully.\n";
+
+    storeBooks();
+    storeLoans();
+    cout << "Loan status updated to 'Returned'.\n";
+}
+
+void storeLoans() {
+    FILE* file = fopen("./data/loans.txt", "w");
+    if (file != nullptr) {
+        for (int i = 0; i < getLoansLen(); i++) {
+            fprintf(file, "%d|%d|%d|%d|%s|%s|%s\n",
+                loans[i].id,
+                loans[i].memberId,
+                loans[i].bookId,
+                loans[i].staffId,
+                loans[i].loanDate.c_str(),
+                loans[i].returnDate.c_str(),
+                loans[i].status.c_str()
+            );
+        }
+        fclose(file);
+    } else {
+        cout << "Failed to open loans file for writing.\n";
+    }
+}
+
+void loadLoans() {
+    FILE* file = fopen("./data/loans.txt", "r");
+    if (file == nullptr) {
+        cout << "No loan data available.\n";
+        return;
+    }
+
+    int count = 0;
+    char line[512];
+    while (fgets(line, sizeof(line), file)) {
+        Loan l;
+        char loanDate[20], returnDate[20], status[20];
+
+        sscanf(line, "%d|%d|%d|%d|%[^|]|%[^|]|%[^\n]",
+            &l.id, &l.memberId, &l.bookId, &l.staffId,
+            loanDate, returnDate, status
+        );
+
+        l.loanDate = loanDate;
+        l.returnDate = returnDate;
+        l.status = status;
+
+        loans[count++] = l;
+    }
+
+    setSentinelLoan(count);
+    fclose(file);
+}
 
 int main() {
     loadBooks();
     loadMembers();
     loadStaff();
+    loadLoans();
     char repeatMainMenu;
     int mainChoice;
     do {
@@ -1074,14 +1244,13 @@ int main() {
                             enterToContinue();
                             break;
                         case 2: {
-                            // Add loan logic here
-                            cout << "Add Loan functionality is not implemented yet.\n";
+                            addLoan();
                             enterToContinue();
                             break;
                         }
                         case 3: {
                             // Update loan logic here
-                            cout << "Update Loan functionality is not implemented yet.\n";
+                            returnLoan();
                             enterToContinue();
                             break;
                         }
