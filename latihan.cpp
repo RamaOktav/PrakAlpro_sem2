@@ -224,12 +224,7 @@ int getStaffChoice() {
     return validateIntInput(input);
 }
 
-/**
- * Recursive implementation
- * Search Book by ID
- * @param index is a starting index
- * @param key is a search target
- */
+
 string searchBookById(int index, int key){
     if (books[index].bookId == -1)
         return "Book not found";
@@ -603,6 +598,108 @@ void showAllStaff() {
     cout << setfill('=') << setw(65) << "" << setfill(' ') << endl;
 }
 
+void storeMembers() {
+    FILE* file = fopen("./data/members.txt", "w");
+    if (file != nullptr) {
+        for (int i = 0; i < getMembersLen(); i++) {
+            fprintf(file, "%d|%s|%s|%s|%s|%lld\n",
+                members[i].memberId,
+                members[i].name.c_str(),
+                members[i].dateOfBirth.c_str(),
+                members[i].address.c_str(),
+                members[i].email.c_str(),
+                members[i].phone
+            );
+        }
+        fclose(file);
+    } else {
+        cout << "Failed to open members file for writing.\n";
+    }
+}
+
+void loadMembers() {
+    FILE* file = fopen("./data/members.txt", "r");
+    if (file == nullptr) {
+        cout << "No members data available.\n";
+        return;
+    }
+
+    int count = 0;
+    char line[512];
+    while (fgets(line, sizeof(line), file)) {
+        Member m;
+        char name[100], dob[20], addr[200], email[100];
+        sscanf(line, "%d|%[^|]|%[^|]|%[^|]|%[^|]|%lld",
+            &m.memberId, name, dob, addr, email, &m.phone);
+        m.name = name;
+        m.dateOfBirth = dob;
+        m.address = addr;
+        m.email = email;
+
+        members[count++] = m;
+    }
+    setSentinelMember(count);
+    fclose(file);
+}
+
+void addMember() {
+    int currentCount = getMembersLen();
+    if (currentCount >= GlobalSize::member - 1) {
+        cout << "Member list is full.\n";
+        return;
+    }
+
+    Member m;
+    string temp;
+
+    cout << "Enter Member ID: ";
+    getline(cin, temp);
+    m.memberId = validateIntInput(temp);
+    if (m.memberId == -1) {
+        cout << "Invalid ID input.\n";
+        return;
+    }
+
+    // Cek duplikat ID
+    for (int i = 0; members[i].memberId != -1; i++) {
+        if (members[i].memberId == m.memberId) {
+            cout << "A member with that ID already exists.\n";
+            return;
+        }
+    }
+
+    cout << "Name: ";
+    getline(cin, m.name);
+
+    cout << "Date of Birth (YYYY-MM-DD): ";
+    getline(cin, m.dateOfBirth);
+
+    cout << "Address: ";
+    getline(cin, m.address);
+
+    cout << "Email: ";
+    getline(cin, m.email);
+
+    cout << "Phone number: ";
+    getline(cin, temp);
+    try {
+        m.phone = stoll(temp);
+    } catch (...) {
+        cout << "Invalid phone number.\n";
+        return;
+    }
+
+    // Simpan ke array
+    members[currentCount] = m;
+    setSentinelMember(currentCount + 1);
+
+    // Simpan ke file
+    storeMembers();
+
+    cout << "\nMember added successfully.\n";
+}
+
+
 void deleteBook() {
     string deleteIdStr;
     int deleteId;
@@ -636,6 +733,7 @@ void deleteBook() {
 
 int main() {
     loadBooks();
+    loadMembers();
     char repeatMainMenu;
     int mainChoice;
     do {
@@ -714,6 +812,10 @@ int main() {
                             break;
                         case 2:
                             showMembers(members);
+                            enterToContinue();
+                            break;
+                        case 3:
+                            addMember();
                             enterToContinue();
                             break;
                         case 0:
