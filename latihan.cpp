@@ -1062,6 +1062,7 @@ int main() {
                             break;
                     }
                 } while (staffChoice != 0);
+                break;
             } 
             case 4: {// Sub menu "Loans"
                 int LoanChoice;
@@ -1098,6 +1099,7 @@ int main() {
                             break;
                     }
                 } while (LoanChoice != 0);
+                break;
             }
             case 0:
                 cout << "Exit\n";
