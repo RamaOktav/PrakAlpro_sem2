@@ -1103,6 +1103,51 @@ void loadLoans() {
     fclose(file);
 }
 
+void deleteLoan() {
+    string input;
+    cout << "Enter Loan ID to delete: ";
+    getline(cin, input);
+    int deleteId = validateIntInput(input);
+
+    if (deleteId == -1) {
+        cout << "Invalid ID.\n";
+        return;
+    }
+
+    int index = -1;
+    for (int i = 0; loans[i].id != -1; i++) {
+        if (loans[i].id == deleteId) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index == -1) {
+        cout << "Loan not found.\n";
+        return;
+    }
+
+    // Tambahkan stok kembali jika status masih "Loaned"
+    if (toLowerCase(loans[index].status) == "loaned") {
+        int bookIndex = findBookIndexById(loans[index].bookId);
+        if (bookIndex != -1) {
+            books[bookIndex].stock++;
+            storeBooks();
+        }
+    }
+
+    // Geser array ke kiri
+    for (int i = index; i < getLoansLen(); i++) {
+        loans[i] = loans[i + 1];
+    }
+
+    setSentinelLoan(getLoansLen() - 1);
+    storeLoans();
+
+    cout << "Loan deleted.\n";
+}
+
+
 int main() {
     loadBooks();
     loadMembers();
@@ -1165,7 +1210,7 @@ int main() {
                             enterToContinue();
                             break;
                         case 0:
-                            cout << "Back to main menu\n";
+                            deleteLoan();
                             break;
                         default: {
                             invalidChoice();
