@@ -224,6 +224,21 @@ int getStaffChoice() {
     return validateIntInput(input);
 }
 
+int getLoansChoice(){
+    string input;
+    clearScreen();
+    cout << "Loans Menu\n";
+    cout << "1. Show All Loans\n";
+    cout << "2. Add Loan\n";
+    cout << "3. Update Loan\n";
+    cout << "4. Delete Loan\n";
+    cout << "0. Back to main menu\n";
+    cout << "Select menu : ";
+    cin >> input;
+    cin.ignore();
+    return validateIntInput(input);
+}
+
 
 string searchBookById(int index, int key){
     if (books[index].bookId == -1)
@@ -731,9 +746,198 @@ void deleteBook() {
     cout << "Book deleted.\n";
 }
 
+void storeStaff() {
+    FILE* file = fopen("./data/staff.txt", "w");
+    if (file != nullptr) {
+        for (int i = 0; i < getStaffLen(); i++) {
+            fprintf(file, "%d|%s|%s|%s\n",
+                staff[i].staffId,
+                staff[i].name.c_str(),
+                staff[i].role.c_str(),
+                staff[i].email.c_str());
+        }
+        fclose(file);
+    } else {
+        cout << "Failed to open staff file for writing.\n";
+    }
+}
+
+void loadStaff() {
+    FILE* file = fopen("./data/staff.txt", "r");
+    if (file == nullptr) {
+        cout << "No staff data available.\n";
+        return;
+    }
+
+    int count = 0;
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        Staff s;
+        char name[100], role[50], email[100];
+        sscanf(line, "%d|%[^|]|%[^|]|%[^\n]",
+               &s.staffId, name, role, email);
+        s.name = name;
+        s.role = role;
+        s.email = email;
+        staff[count++] = s;
+    }
+    setSentinelStaff(count);
+    fclose(file);
+}
+
+void addStaff() {
+    int currentCount = getStaffLen();
+    if (currentCount >= GlobalSize::staff - 1) {
+        cout << "Staff list is full.\n";
+        return;
+    }
+
+    Staff s;
+    string temp;
+
+    cout << "Enter Staff ID: ";
+    getline(cin, temp);
+    s.staffId = validateIntInput(temp);
+    if (s.staffId == -1) {
+        cout << "Invalid ID input.\n";
+        return;
+    }
+
+    // Cek duplikat ID
+    for (int i = 0; staff[i].staffId != -1; i++) {
+        if (staff[i].staffId == s.staffId) {
+            cout << "Staff with that ID already exists.\n";
+            return;
+        }
+    }
+
+    cout << "Name: ";
+    getline(cin, s.name);
+    cout << "Role: ";
+    getline(cin, s.role);
+    cout << "Email: ";
+    getline(cin, s.email);
+
+    staff[currentCount] = s;
+    setSentinelStaff(currentCount + 1);
+    storeStaff();
+    cout << "Staff added successfully.\n";
+}
+
+void updateStaff() {
+    string updateIdStr;
+    int updateId;
+
+    clearScreen();
+    showAllStaff();  // tampilkan semua data terlebih dulu
+    cout << "Enter Staff ID to update: ";
+    getline(cin, updateIdStr);
+    updateId = validateIntInput(updateIdStr);
+
+    if (updateId == -1) {
+        cout << "Invalid ID input.\n";
+        return;
+    }
+
+    // cari index staff berdasarkan ID
+    int index = -1;
+    for (int i = 0; staff[i].staffId != -1; i++) {
+        if (staff[i].staffId == updateId) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index == -1) {
+        cout << "Staff not found.\n";
+        return;
+    }
+
+    Staff updated;
+    cout << "Enter new values (leave blank to keep current):\n";
+
+    cout << "Name [" << staff[index].name << "]: ";
+    getline(cin, updated.name);
+    cout << "Role [" << staff[index].role << "]: ";
+    getline(cin, updated.role);
+    cout << "Email [" << staff[index].email << "]: ";
+    getline(cin, updated.email);
+
+    if (!updated.name.empty()) staff[index].name = updated.name;
+    if (!updated.role.empty()) staff[index].role = updated.role;
+    if (!updated.email.empty()) staff[index].email = updated.email;
+
+    storeStaff();
+    cout << "Staff updated successfully.\n";
+}
+
+void deleteStaff() {
+    string deleteIdStr;
+    int deleteId;
+
+    clearScreen();
+    showAllStaff();
+    cout << "Enter Staff ID to delete: ";
+    getline(cin, deleteIdStr);
+
+    deleteId = validateIntInput(deleteIdStr);
+    if (deleteId == -1) {
+        cout << "Invalid ID.\n";
+        return;
+    }
+
+    int index = -1;
+    for (int i = 0; staff[i].staffId != -1; i++) {
+        if (staff[i].staffId == deleteId) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index == -1) {
+        cout << "Staff not found.\n";
+        return;
+    }
+
+    // geser ke kiri
+    for (int i = index; i < getStaffLen(); i++) {
+        staff[i] = staff[i + 1];
+    }
+
+    setSentinelStaff(getStaffLen() - 1);
+    storeStaff();
+    cout << "Staff deleted.\n";
+}
+
+void showAllLoans() {
+    cout << setfill('=') << setw(80) << "" << setfill(' ') << endl
+         << setw(5) << left << "ID"
+         << setw(10) << left << "MemberID"
+         << setw(10) << left << "BookID"
+         << setw(10) << left << "StaffID"
+         << setw(15) << left << "Loan Date"
+         << setw(15) << left << "Return Date"
+         << setw(10) << left << "Status" << endl
+         << setfill('=') << setw(80) << "" << setfill(' ') << endl;
+
+    for (int i = 0; loans[i].id != -1; i++) {
+        cout << setw(5) << left << loans[i].id
+             << setw(10) << left << loans[i].memberId
+             << setw(10) << left << loans[i].bookId
+             << setw(10) << left << loans[i].staffId
+             << setw(15) << left << loans[i].loanDate
+             << setw(15) << left << loans[i].returnDate
+             << setw(10) << left << loans[i].status << endl;
+    }
+
+    cout << setfill('=') << setw(80) << "" << setfill(' ') << endl;
+}
+
+
 int main() {
     loadBooks();
     loadMembers();
+    loadStaff();
     char repeatMainMenu;
     int mainChoice;
     do {
@@ -838,15 +1042,15 @@ int main() {
                             enterToContinue();
                             break;
                             case 2:
-                            cout << "Add Staff (Not Implemented)\n";
+                            addStaff();
                             enterToContinue();
                             break;
                         case 3:
-                            cout << "Update Staff (Not Implemented)\n";
+                            updateStaff();
                             enterToContinue();
                             break;
                         case 4:
-                            cout << "Delete Staff (Not Implemented)\n";
+                            deleteStaff();
                             enterToContinue();
                             break;
                         case 0:
@@ -859,6 +1063,42 @@ int main() {
                     }
                 } while (staffChoice != 0);
             } 
+            case 4: {// Sub menu "Loans"
+                int LoanChoice;
+                do {
+                    LoanChoice = getLoansChoice();
+                    switch (LoanChoice) {
+                        case 1:
+                            showAllLoans();
+                            enterToContinue();
+                            break;
+                        case 2: {
+                            // Add loan logic here
+                            cout << "Add Loan functionality is not implemented yet.\n";
+                            enterToContinue();
+                            break;
+                        }
+                        case 3: {
+                            // Update loan logic here
+                            cout << "Update Loan functionality is not implemented yet.\n";
+                            enterToContinue();
+                            break;
+                        }
+                        case 4: {
+                            // Delete loan logic here
+                            cout << "Delete Loan functionality is not implemented yet.\n";
+                            enterToContinue();
+                            break;
+                        }
+                        case 0:
+                            cout << "Back to main menu\n";
+                            break;
+                        default:
+                            invalidChoice();
+                            break;
+                    }
+                } while (LoanChoice != 0);
+            }
             case 0:
                 cout << "Exit\n";
                 break;

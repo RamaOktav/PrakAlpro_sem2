@@ -1,0 +1,6 @@
+1|Alice Johnson|Librarian|alice.johnson@email.com
+2|Bob Smith|Library Manager|bob.smith@email.com
+3|Charlie Brown|Library Assistant|charlie.brown@email.com
+4|Diana White|Head Librarian|diana.white@email.com
+5|Eve Green|Technician|eve.green@email.com
+6|Agus Salim|Cleaning Service|agussalim@gmail.com
