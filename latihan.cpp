@@ -285,7 +285,7 @@ void showBooks() {
 
 void sortBooks(int criteria, int order){
     int i=0;
-    int size = getBooksLen();
+    int size = getBooksLen();//kooojoj
     Book duplicate[size];
     while (books[i].bookId != -1) {
         duplicate[i] = books[i];
