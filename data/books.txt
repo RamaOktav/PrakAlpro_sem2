@@ -2,3 +2,54 @@
 2 "1984" "George Orwell" Dystopian 7 1949
 3 "The Hobbit" "J.R.R. Tolkien" Fantasy 6 1937
 4 "Joko Jenggirat" "Ki Joko Pintar" horror 10 2020
+5 "Kitab Katub" "Tatang Sutarman" Kitab 9 2020
+6 "Sistem Operasi" "Andrew S. Tanenbaum" Computer Science 15 2017
+7 "Data Structures and Algorithms in Python" "Michael T. Goodrich" Computer Science 11 2013
+8 "Atomic Habits" "James Clear" Self-Help 8 2018
+9 "Filosofi Teras" "Henry Manampiring" Philosophy 5 2019
+10 "Laskar Pelangi" "Andrea Hirata" Fiction 14 2005
+11 "The Great Gatsby" "F. Scott Fitzgerald" Classics 9 1925
+12 "To Kill a Mockingbird" "Harper Lee" Classics 10 1960
+13 "Pride and Prejudice" "Jane Austen" Romance 11 1813
+14 "The Lord of the Rings" "J.R.R. Tolkien" Fantasy 13 1954
+15 "Harry Potter and the Sorcerer's Stone" "J.K. Rowling" Fantasy 18 1997
+16 "The Alchemist" "Paulo Coelho" Fiction 7 1988
+17 "Rich Dad Poor Dad" "Robert T. Kiyosaki" Finance 10 1997
+18 "Thinking, Fast and Slow" "Daniel Kahneman" Psychology 12 2011
+19 "Sapiens: A Brief History of Humankind" "Yuval Noah Harari" History 16 2014
+20 "Deep Work" "Cal Newport" Self-Help 8 2016
+21 "Zero to One" "Peter Thiel" Business 9 2014
+22 "The Lean Startup" "Eric Ries" Business 10 2011
+23 "Introduction to Algorithms" "Thomas H. Cormen" Computer Science 20 2009
+24 "Design Patterns" "Erich Gamma et al." Programming 14 1994
+25 "Refactoring" "Martin Fowler" Programming 13 1999
+26 "The Pragmatic Programmer" "Andrew Hunt, David Thomas" Programming 11 1999
+27 "Code Complete" "Steve McConnell" Programming 17 2004
+28 "Operating System Concepts" "Abraham Silberschatz" Computer Science 16 2018
+29 "Database System Concepts" "Abraham Silberschatz" Computer Science 15 2019
+30 "Computer Networking: A Top-Down Approach" "James F. Kurose" Computer Science 14 2017
+31 "Artificial Intelligence: A Modern Approach" "Stuart Russell" Computer Science 19 2020
+32 "Machine Learning" "Tom M. Mitchell" Computer Science 18 1997
+33 "Python Crash Course" "Eric Matthes" Programming 10 2015
+34 "Head First Java" "Kathy Sierra, Bert Bates" Programming 12 2005
+35 "Eloquent JavaScript" "Marijn Haverbeke" Programming 9 2011
+36 "You Don't Know JS Yet" "Kyle Simpson" Programming 11 2020
+37 "Cracking the Coding Interview" "Gayle Laakmann McDowell" Programming 13 2015
+38 "The Mythical Man-Month" "Frederick Brooks Jr." Software Engineering 8 1975
+39 "Agile Software Development, Principles, Patterns, and Practices" "Robert C. Martin" Software Engineering 12 2002
+40 "Clean Architecture" "Robert C. Martin" Software Engineering 10 2017
+41 "Domain-Driven Design" "Eric Evans" Software Engineering 11 2003
+42 "The Art of Computer Programming, Vol. 1" "Donald Knuth" Computer Science 25 1968
+43 "The Art of Computer Programming, Vol. 2" "Donald Knuth" Computer Science 22 1969
+44 "The Art of Computer Programming, Vol. 3" "Donald Knuth" Computer Science 23 1973
+45 "Structure and Interpretation of Computer Programs" "Harold Abelson" Computer Science 17 1984
+46 "Compilers: Principles, Techniques, and Tools" "Alfred V. Aho et al." Computer Science 16 2006
+47 "Computer Systems: A Programmer's Perspective" "Randal E. Bryant" Computer Science 18 2015
+48 "The Selfish Gene" "Richard Dawkins" Science 9 1976
+49 "Cosmos" "Carl Sagan" Science 11 1980
+50 "A Brief History of Time" "Stephen Hawking" Science 10 1988
+51 "Fisika Dasar" "Halliday & Resnick" Physics 15 1998
+52 "Kimia Dasar" "Raymond Chang" Chemistry 14 2005
+53 "Biologi Campbell" "Campbell & Reece" Biology 17 2010
+54 "Matematika Diskrit" "Rinaldi Munir" Mathematics 13 2006
+55 "Statistika untuk Penelitian" "Sugiyono" Statistics 12 2015
