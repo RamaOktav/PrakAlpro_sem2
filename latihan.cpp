@@ -1242,6 +1242,7 @@ void deleteLoan() {
 
 
 int main() {
+    cout << "Welcome to the Library Management System\n";
     loadBooks();
     loadMembers();
     loadStaff();
