@@ -658,6 +658,63 @@ void loadMembers() {
     fclose(file);
 }
 
+void addMember() {
+    int currentCount = getMembersLen();
+    if (currentCount >= GlobalSize::member - 1) {
+        cout << "Member list is full.\n";
+        return;
+    }
+
+    Member m;
+    string temp;
+
+    cout << "Enter Member ID: ";
+    getline(cin, temp);
+    m.memberId = validateIntInput(temp);
+    if (m.memberId == -1) {
+        cout << "Invalid ID input.\n";
+        return;
+    }
+
+    // Cek duplikat ID
+    for (int i = 0; members[i].memberId != -1; i++) {
+        if (members[i].memberId == m.memberId) {
+            cout << "A member with that ID already exists.\n";
+            return;
+        }
+    }
+
+    cout << "Name: ";
+    getline(cin, m.name);
+
+    cout << "Date of Birth (YYYY-MM-DD): ";
+    getline(cin, m.dateOfBirth);
+
+    cout << "Address: ";
+    getline(cin, m.address);
+
+    cout << "Email: ";
+    getline(cin, m.email);
+
+    cout << "Phone number: ";
+    getline(cin, temp);
+    try {
+        m.phone = stoll(temp);
+    } catch (...) {
+        cout << "Invalid phone number.\n";
+        return;
+    }
+
+    // Simpan ke array
+    members[currentCount] = m;
+    setSentinelMember(currentCount + 1);
+
+    // Simpan ke file
+    storeMembers();
+
+    cout << "\nMember added successfully.\n";
+}
+
 void updateMember() {
     string input;
     cout << "Enter Member ID to update: ";
@@ -748,67 +805,6 @@ void deleteMember() {
 
     cout << "Member deleted.\n";
 }
-
-
-void addMember() {
-    int currentCount = getMembersLen();
-    if (currentCount >= GlobalSize::member - 1) {
-        cout << "Member list is full.\n";
-        return;
-    }
-
-    Member m;
-    string temp;
-
-    cout << "Enter Member ID: ";
-    getline(cin, temp);
-    m.memberId = validateIntInput(temp);
-    if (m.memberId == -1) {
-        cout << "Invalid ID input.\n";
-        return;
-    }
-
-    // Cek duplikat ID
-    for (int i = 0; members[i].memberId != -1; i++) {
-        if (members[i].memberId == m.memberId) {
-            cout << "A member with that ID already exists.\n";
-            return;
-        }
-    }
-
-    cout << "Name: ";
-    getline(cin, m.name);
-
-    cout << "Date of Birth (YYYY-MM-DD): ";
-    getline(cin, m.dateOfBirth);
-
-    cout << "Address: ";
-    getline(cin, m.address);
-
-    cout << "Email: ";
-    getline(cin, m.email);
-
-    cout << "Phone number: ";
-    getline(cin, temp);
-    try {
-        m.phone = stoll(temp);
-    } catch (...) {
-        cout << "Invalid phone number.\n";
-        return;
-    }
-
-    // Simpan ke array
-    members[currentCount] = m;
-    setSentinelMember(currentCount + 1);
-
-    // Simpan ke file
-    storeMembers();
-
-    cout << "\nMember added successfully.\n";
-}
-
-
-
 
 void deleteBook() {
     string deleteIdStr;
