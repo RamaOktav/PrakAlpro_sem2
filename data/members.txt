@@ -1,1 +1,2 @@
-1 "John Doe" "1990-04-25" "1234 Elm Street, Springfield, IL" "john.doe@email.com" 5551234567
+1||€|;||691965786000
+2|Ali Shadikin|2000-10-10|Banguntapan, Sleman|alis@gmail.com|8123456789

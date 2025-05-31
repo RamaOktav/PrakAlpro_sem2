@@ -554,9 +554,10 @@ void searchMemberById() {
 
     int index = -1;
     for (int i = 0; members[i].memberId != -1; i++) {
-        if (members[i].memberId == key)
+        if (members[i].memberId == key){
             index = i;
             break;
+        }
     }
     if (index == -1) {
         cout << "Member not found" << endl;
@@ -657,6 +658,98 @@ void loadMembers() {
     fclose(file);
 }
 
+void updateMember() {
+    string input;
+    cout << "Enter Member ID to update: ";
+    getline(cin, input);
+    int updateId = validateIntInput(input);
+
+    if (updateId == -1) {
+        cout << "Invalid ID input.\n";
+        return;
+    }
+
+    int index = -1;
+    for (int i = 0; members[i].memberId != -1; i++) {
+        if (members[i].memberId == updateId) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index == -1) {
+        cout << "Member not found.\n";
+        return;
+    }
+
+    Member updated;
+    string temp;
+
+    cout << "Enter new values (leave blank to keep current):\n";
+    cout << "Name [" << members[index].name << "]: ";
+    getline(cin, updated.name);
+    cout << "Date of Birth [" << members[index].dateOfBirth << "]: ";
+    getline(cin, updated.dateOfBirth);
+    cout << "Address [" << members[index].address << "]: ";
+    getline(cin, updated.address);
+    cout << "Email [" << members[index].email << "]: ";
+    getline(cin, updated.email);
+    cout << "Phone [" << members[index].phone << "]: ";
+    getline(cin, temp);
+
+    // Update jika tidak kosong
+    if (!updated.name.empty()) members[index].name = updated.name;
+    if (!updated.dateOfBirth.empty()) members[index].dateOfBirth = updated.dateOfBirth;
+    if (!updated.address.empty()) members[index].address = updated.address;
+    if (!updated.email.empty()) members[index].email = updated.email;
+    if (!temp.empty()) {
+        try {
+            members[index].phone = stoll(temp);
+        } catch (...) {
+            cout << "Invalid phone number input. Keeping old value.\n";
+        }
+    }
+
+    storeMembers();
+    cout << "Member updated successfully.\n";
+}
+
+void deleteMember() {
+    string input;
+    cout << "Enter Member ID to delete: ";
+    getline(cin, input);
+    int deleteId = validateIntInput(input);
+
+    if (deleteId == -1) {
+        cout << "Invalid ID.\n";
+        return;
+    }
+
+    int index = -1;
+    for (int i = 0; members[i].memberId != -1; i++) {
+        if (members[i].memberId == deleteId) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index == -1) {
+        cout << "Member not found.\n";
+        return;
+    }
+
+    // Geser array ke kiri
+    for (int i = index; i < getMembersLen(); i++) {
+        members[i] = members[i + 1];
+    }
+
+    setSentinelMember(getMembersLen() - 1);
+    storeMembers();
+
+    cout << "Member deleted.\n";
+}
+
+
 void addMember() {
     int currentCount = getMembersLen();
     if (currentCount >= GlobalSize::member - 1) {
@@ -713,6 +806,8 @@ void addMember() {
 
     cout << "\nMember added successfully.\n";
 }
+
+
 
 
 void deleteBook() {
@@ -933,6 +1028,26 @@ void showAllLoans() {
     cout << setfill('=') << setw(80) << "" << setfill(' ') << endl;
 }
 
+void storeLoans() {
+    FILE* file = fopen("./data/loans.txt", "w");
+    if (file != nullptr) {
+        for (int i = 0; i < getLoansLen(); i++) {
+            fprintf(file, "%d|%d|%d|%d|%s|%s|%s\n",
+                loans[i].id,
+                loans[i].memberId,
+                loans[i].bookId,
+                loans[i].staffId,
+                loans[i].loanDate.c_str(),
+                loans[i].returnDate.c_str(),
+                loans[i].status.c_str()
+            );
+        }
+        fclose(file);
+    } else {
+        cout << "Failed to open loans file for writing.\n";
+    }
+}
+
 void addLoan() {
     int currentCount = getLoansLen();
     if (currentCount >= GlobalSize::loan - 1) {
@@ -1054,25 +1169,7 @@ void returnLoan() {
     cout << "Loan status updated to 'Returned'.\n";
 }
 
-void storeLoans() {
-    FILE* file = fopen("./data/loans.txt", "w");
-    if (file != nullptr) {
-        for (int i = 0; i < getLoansLen(); i++) {
-            fprintf(file, "%d|%d|%d|%d|%s|%s|%s\n",
-                loans[i].id,
-                loans[i].memberId,
-                loans[i].bookId,
-                loans[i].staffId,
-                loans[i].loanDate.c_str(),
-                loans[i].returnDate.c_str(),
-                loans[i].status.c_str()
-            );
-        }
-        fclose(file);
-    } else {
-        cout << "Failed to open loans file for writing.\n";
-    }
-}
+
 
 void loadLoans() {
     FILE* file = fopen("./data/loans.txt", "r");
@@ -1210,7 +1307,8 @@ int main() {
                             enterToContinue();
                             break;
                         case 0:
-                            deleteLoan();
+                        cout << "Back to main menu\n";
+                            enterToContinue();
                             break;
                         default: {
                             invalidChoice();
@@ -1235,6 +1333,14 @@ int main() {
                             break;
                         case 3:
                             addMember();
+                            enterToContinue();
+                            break;
+                        case 4:
+                            updateMember();
+                            enterToContinue();
+                            break;
+                        case 5:
+                            deleteMember();
                             enterToContinue();
                             break;
                         case 0:
@@ -1294,14 +1400,12 @@ int main() {
                             break;
                         }
                         case 3: {
-                            // Update loan logic here
                             returnLoan();
                             enterToContinue();
                             break;
                         }
                         case 4: {
-                            // Delete loan logic here
-                            cout << "Delete Loan functionality is not implemented yet.\n";
+                            deleteLoan();
                             enterToContinue();
                             break;
                         }

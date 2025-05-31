@@ -3,4 +3,3 @@
 3|Charlie Brown|Library Assistant|charlie.brown@email.com
 4|Diana White|Head Librarian|diana.white@email.com
 5|Eve Green|Technician|eve.green@email.com
-6|Agus Salim|Cleaning Service|agussalim@gmail.com
