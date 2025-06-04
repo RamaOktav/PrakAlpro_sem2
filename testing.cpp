@@ -232,12 +232,15 @@ int findBookIndexById(int targetId) {
 int getMainChoice() {
     string input;
     clearScreen();
+    cout << "=====================\n";
     cout << "Welcome\n";
     cout << "1. Book\n";
     cout << "2. Member\n";
     cout << "3. Staff\n";
     cout << "4. Loans\n";
+    cout << "5. Add admin\n";
     cout << "0. Exit\n";
+    cout << "=====================\n";
     cout << "Select menu : ";
     cin >> input;
     cin.ignore();
@@ -247,6 +250,7 @@ int getMainChoice() {
 int getBookChoice() {
     string input;
     clearScreen();
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Books Menu\n";
     cout << "1. Search Books\n";
     cout << "2. Show Books\n";
@@ -254,6 +258,7 @@ int getBookChoice() {
     cout << "4. Update Books\n";
     cout << "5. Delete Books\n";
     cout << "0. Back to main menu\n";
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Select menu : ";
     cin >> input;
     cin.ignore();
@@ -263,10 +268,12 @@ int getBookChoice() {
 int getSearchBookChoice() {
     string input;
     clearScreen();
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Search Book Menu\n";
     cout << "1. Search by ID\n";
     cout << "2. Search by Title\n";
     cout << "0. Back to book menu\n";
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Select menu : ";
     cin >> input;
     cin.ignore();
@@ -276,6 +283,7 @@ int getSearchBookChoice() {
 int getMemberChoice() {
     string input;
     clearScreen();
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Member Menu\n";
     cout << "1. Search Member\n";
     cout << "2. Show All Member\n";
@@ -283,6 +291,7 @@ int getMemberChoice() {
     cout << "4. Update Member\n";
     cout << "5. Delete Member\n";
     cout << "0. Back to main menu\n";
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Select menu : ";
     cin >> input;
     cin.ignore();
@@ -292,12 +301,14 @@ int getMemberChoice() {
 int getStaffChoice() {
     string input;
     clearScreen();
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Staff Menu\n";
     cout << "1. Show All Staff\n";
     cout << "2. Add Staff\n";
     cout << "3. Update Staff\n";
     cout << "4. Delete Staff\n";
     cout << "0. Back to main menu\n";
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Select menu : ";
     cin >> input;
     cin.ignore();
@@ -307,12 +318,14 @@ int getStaffChoice() {
 int getLoansChoice(){
     string input;
     clearScreen();
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Loans Menu\n";
     cout << "1. Show All Loans\n";
     cout << "2. Add Loan\n";
     cout << "3. Return Loan\n";
     cout << "4. Delete Loan\n";
     cout << "0. Back to main menu\n";
+    cout << setfill('=') << setw(20) << "" << setfill(' ') << endl;
     cout << "Select menu : ";
     cin >> input;
     cin.ignore();
@@ -1495,6 +1508,11 @@ void mainPage(){
                 } while (LoanChoice != 0);
                 break;
             }
+            case 5: { //Register user
+                registerUser();
+                enterToContinue();
+                break;
+            }
             case 0:
                 cout << "Exit\n";
                 break;
@@ -1511,13 +1529,13 @@ void menu() {
     char pilihan;
     cout << "============================\n";
     cout << "1. LOGIN                    |\n";
-    cout << "2. REGISTER                 |\n";
+    cout << "2. KELUAR                   |\n";
     cout << "============================\n";
     cout << "Masukkan pilihan : ";
     cin >> pilihan;
     switch (pilihan) {
         case '1': login(3); break;
-        case '2': registerUser(); break;
+        case '2': exit(0); break;
         default:
             cout << "Input salah\n. Mohon masukkan INPUT sesuai ketentuan!!\n";
             system("pause");
