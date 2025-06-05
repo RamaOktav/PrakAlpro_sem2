@@ -4,3 +4,4 @@
 4|Diana White|Head Librarian|diana.white@email.com
 5|Eve Green|Technician|eve.green@email.com
 6|Agus Salim|Cleaning Service|agussalim@gmail.com
+7|Agus Buntang|Plumber|agusb@gmail.com

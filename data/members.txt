@@ -1,10 +1,3 @@
-1 "John Doe" "1990-04-25" "1234 Elm Street, Springfield, IL" "john.doe@email.com" 5551234567
-2 "Jane Smith" "1988-11-12" "567 Oak Avenue, Anytown, CA" "jane.smith@email.com" 5559876543
-3 "Peter Jones" "1995-07-01" "890 Pine Lane, Smallville, TX" "peter.jones@email.com" 5552345678
-4 "Mary Brown" "1975-02-28" "101 Maple Road, Big City, NY" "mary.brown@email.com" 5558765432
-5 "Chris Green" "2000-09-15" "202 Birch Court, Villageton, FL" "chris.green@email.com" 5553456789
-6 "Anna Wilson" "1992-03-10" "303 Cedar Drive, Lakeside, WA" "anna.wilson@email.com" 5557654321
-7 "David Lee" "1985-06-20" "404 Poplar Street, Rivertown, GA" "david.lee@email.com" 5554567890
-8 "Sarah Adams" "1998-01-05" "505 Willow Way, Hillside, NC" "sarah.adams@email.com" 5556789012
-9 "Michael Clark" "1970-12-01" "606 Spruce Lane, Mountainview, CO" "michael.c@email.com" 5550123456
-10 "Emily Taylor" "1993-10-18" "707 Fir Street, Oceanfront, OR" "emily.t@email.com" 5551098765
+1|Sarah Janu|2005-10-07|Barbarsari, Sleman, Yogyakarta|sarahj@gmail.com|8123240067
+2|Sriti Simaun|2000-12-1|Fort Jhonson, Manokwari, Papua Utara|sritis@gmail.com|8122200117
+3|Ruri Sinaga|2006-06-17|Ujung Saribu, Kab. Toba, Sumatra Utara|ruris@gmail.com|89240099

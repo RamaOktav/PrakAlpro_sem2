@@ -67,7 +67,7 @@ void login(int batas) {
         batas--;
         cout << "Kesempatan tinggal " << batas << " Kali\n";
         if (batas > 0) login(batas);
-        else { // Tambahan: jika kesempatan habis, kembali ke menu
+        else {
              system("pause");
              menu();
         }
@@ -85,7 +85,7 @@ void registerUser() {
     jumlahAkun++;
     delete Pengguna;
     system("pause");
-    menu(); // kembali ke menu login/register setelah register
+    menu();
 }
 
 struct Book {
@@ -127,30 +127,9 @@ struct GlobalSize {
 };
 
 Book books[GlobalSize::book];
-Member members[GlobalSize::member] = {
-    {1, "John Doe", "1990-04-25", "1234 Elm Street, Springfield, IL", "john.doe@email.com", 5551234567},
-    {2, "Jane Smith", "1985-08-12", "5678 Oak Avenue, Los Angeles, CA", "jane.smith@email.com", 5559876543},
-    {3, "Albert Einstein", "1879-03-14", "Princeton, New Jersey, USA", "albert.einstein@email.com", 5555555555},
-    {4, "Marie Curie", "1867-11-07", "Paris, France", "marie.curie@email.com", 5551239876},
-    {5, "Mahatma Gandhi", "1869-10-02", "Porbandar, Gujarat, India", "mahatma.gandhi@email.com", 5557418520},
-    {-1, "Sentinel Value", "", "", "", 0 }
-};
-Staff staff[GlobalSize::staff] = {
-    {1, "Alice Johnson", "Librarian", "alice.johnson@email.com"},
-    {2, "Bob Smith", "Library Manager", "bob.smith@email.com"},
-    {3, "Charlie Brown", "Library Assistant", "charlie.brown@email.com"},
-    {4, "Diana White", "Head Librarian", "diana.white@email.com"},
-    {5, "Eve Green", "Technician", "eve.green@email.com"},
-    {-1, "Sentinel Value", "", ""}
-};
-Loan loans[GlobalSize::loan] = {
-    {1, 1, 3, 1, "2025-02-01", "2025-02-15", "Returned"},
-    {2, 2, 3, 2, "2025-02-05", "2025-02-20", "Returned"},
-    {3, 3, 3, 3, "2025-02-10", "2025-02-25", "Loaned"},
-    {4, 4, 3, 4, "2025-02-12", "2025-02-26", "Loaned"},
-    {5, 5, 3, 5, "2025-02-14", "2025-02-28", "Returned"},
-    {-1, -1, -1, -1, "Sentinel Value", "Sentinel Value", "Sentinel Value"}
-};
+Member members[GlobalSize::member];
+Staff staff[GlobalSize::staff];
+Loan loans[GlobalSize::loan];
 
 void enterToContinue() {
     cout << "\nPress 'Enter' to continue...";
@@ -161,9 +140,9 @@ void invalidChoice() {
     enterToContinue();
 }
 void clearScreen() {
-#ifdef _WIN32 // for Windows
+#ifdef _WIN32 
     system("cls");
-#elif defined(linux) // for Linux
+#elif defined(linux)
     cout << "\n";
     system("clear");
 #endif
@@ -375,9 +354,7 @@ void searchBookByTitle() {
     
 }
 
-/**
- * Show all element on books array including sentinel value
- */
+
 void showBooks() {
     int i = 0;
     while (books[i].bookId != -1) {
@@ -393,7 +370,7 @@ void showBooks() {
 
 void sortBooks(int criteria, int order){
     int i=0;
-    int size = getBooksLen();//kooojoj
+    int size = getBooksLen();
     Book duplicate[size];
     while (books[i].bookId != -1) {
         duplicate[i] = books[i];
@@ -484,7 +461,6 @@ void showBooksOrder() {
     sortBooks(showChoice,orderChoice);
 }
 
-// load data from file to books array
 void loadBooks() {
     FILE* file = fopen("./data/books.txt", "r");
     if (file == nullptr) {
@@ -512,7 +488,6 @@ void loadBooks() {
     fclose(file);
 }
 
-// store current books array to file, for change (update and delete)
 void storeBooks() {
     FILE* file = fopen("./data/books.txt", "w");
     if (file != nullptr) {

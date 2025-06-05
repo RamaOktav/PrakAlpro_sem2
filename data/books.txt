@@ -1,10 +1,10 @@
-1 "Clean Code" "Robert C. Martin" Programming 12 2008
+1 "Clean Code" "Robert C. Martin" Programming 11 2008
 2 "1984" "George Orwell" Dystopian 7 1949
 3 "The Hobbit" "J.R.R. Tolkien" Fantasy 6 1937
 4 "Joko Jenggirat" "Ki Joko Pintar" horror 10 2020
 5 "Kitab Katub" "Tatang Sutarman" Kitab 9 2020
-6 "Sistem Operasi" "Andrew S. Tanenbaum" Computer Science 15 2017
-7 "Data Structures and Algorithms in Python" "Michael T. Goodrich" Computer Science 11 2013
+6 "Sistem Operasi" "Andrew S. Tanenbaum" Computer 9 2020
+7 "Data Structures and Algorithms in Python" "Michael T. Goodrich" Computer 9 2020
 8 "Atomic Habits" "James Clear" Self-Help 8 2018
 9 "Filosofi Teras" "Henry Manampiring" Philosophy 5 2019
 10 "Laskar Pelangi" "Andrea Hirata" Fiction 14 2005
